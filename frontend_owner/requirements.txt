@@ -3,3 +3,5 @@ requests
 streamlit-firebase-auth
 python-dotenv
 pydantic-settings
+streamlit-authenticator
+PyYAML
