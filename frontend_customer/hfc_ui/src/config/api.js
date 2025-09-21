@@ -1,5 +1,5 @@
 // --- CONFIGURATION ---
-const API_BASE_URL = "https://business-app-seg7.onrender.com/api/v1";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 
 // --- CHATBOT FUNCTIONS ---
