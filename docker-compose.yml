@@ -1,0 +1,53 @@
+version: "3.8"
+
+# Define all the services (containers) that make up your application
+services:
+  # The FastAPI Backend Service
+  backend:
+    build:
+      context: ./backend  # Tells Docker to build using the Dockerfile in the 'backend' folder
+    ports:
+      - "8000:8000"  # Maps port 8000 on your machine to port 8000 in the container
+    volumes:
+      # This is for hot-reloading: any changes in your local 'app' folder
+      # will be instantly reflected inside the container, without a rebuild.
+      - ./backend/app:/app/app
+    env_file:
+      - ./backend/.env  # Loads all your secret environment variables
+    depends_on:
+      - mongo  # Tells this service to wait until the 'mongo' service is started
+
+  # The Streamlit Owner's Dashboard Service
+  frontend_owner:
+    build:
+      context: ./frontend_owner
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./frontend_owner:/app # Hot-reloading for Streamlit
+    depends_on:
+      - backend
+
+  # The React Customer UI Service
+  frontend_customer:
+    build:
+      context: ./frontend_customer/my-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend_customer/my-app/src:/app/src # Hot-reloading for React
+    depends_on:
+      - backend
+
+  # The MongoDB Database Service
+  mongo:
+    image: mongo:latest  # Pulls the official MongoDB image from Docker Hub
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db # Persists your database data even if the container stops
+    # You can add environment variables for a root user/pass here for production
+
+# Define the named volume for persisting MongoDB data
+volumes:
+  mongodb_data:

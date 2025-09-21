@@ -1,0 +1,16 @@
+# frontend_owner/auth_config.yaml
+
+credentials:
+  usernames:
+    # This is the owner's account
+    hfc-owner:
+      email: owner@restaurent.com
+      name: "Restaurant Admin"
+      # PASTE YOUR HASHED PASSWORD HERE
+      password: '$2a$12$FldRw4I/LmP6WuUaFHNB/uBjkkL15sdIxqsytrByC2eMHMxT1bZAO' 
+cookie:
+  expiry_days: 30
+  key: '45465783912054879' # Change this to any random string
+  name: 'hfc_admin_cookie'
+preauthorized:
+  emails: []

@@ -1,0 +1,50 @@
+--- General ---
+Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+Ignore IDE-specific files
+.idea/
+.vscode/
+*.swp
+
+--- Python ---
+Ignore virtual environments
+venv/
+/venv/
+*/venv/
+
+Ignore Python bytecode and cache
+pycache/
+*.pyc
+*.pyo
+*.pyd
+
+--- Node.js / React ---
+Ignore the massive node_modules folder
+node_modules/
+*/node_modules/
+
+Ignore build output folders
+build/
+dist/
+.next/
+
+Ignore log files and debug output
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+--- Sensitive Information & Secrets (CRITICAL) ---
+Ignore all environment variable files
+.env
+.env.*
+*/.env
+
+Ignore the Firebase service account key
+firebase-credentials.json
+*/firebase-credentials.json
+
+--- Streamlit ---
+Ignore Streamlit's internal configuration folder
+.streamlit/
