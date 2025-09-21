@@ -8,6 +8,7 @@ langchain-community
 sentence-transformers
 langchain-pinecone
 langchain-text-splitters
+motor==3.7.1
 pymongo==3.12.3
 pinecone
 pydantic-settings
