@@ -12,25 +12,32 @@ st.set_page_config(
 )
 
 # --- THE DEFINITIVE, ENVIRONMENT-AWARE CONFIGURATION ---
-# This block makes your app work both locally and when deployed.
 config = None
 try:
-    # When deployed, it will load the configuration from Streamlit's encrypted secrets
+    # --- THIS IS THE FIX ---
+    # We load the read-only secrets from Streamlit Cloud...
+    creds = dict(st.secrets['credentials'])
+    cook = dict(st.secrets['cookie'])
+    preauth = dict(st.secrets['preauthorized'])
+    
+    # ...and then build a new, MUTABLE dictionary from them.
+    # This is the dictionary we will pass to the authenticator.
     config = {
-        'credentials': dict(st.secrets['credentials']),
-        'cookie': dict(st.secrets['cookie']),
-        'preauthorized': dict(st.secrets['preauthorized'])
+        'credentials': creds,
+        'cookie': cook,
+        'preauthorized': preauth
     }
-    print("Loaded config from Streamlit Secrets.")
+    print("Loaded config from Streamlit Secrets into a mutable dictionary.")
+
 except FileNotFoundError:
-    # When running locally, it will fall back to loading from your auth_config.yaml file
+    # This is the fallback for local development
     print("Secrets not found on cloud, loading from local auth_config.yaml.")
     with open('auth_config.yaml') as file:
         config = yaml.load(file, Loader=SafeLoader)
 
 # -------------------------------------------------------------
 
-# Create the Authenticator object with the loaded config
+# Create the Authenticator object with the now-mutable config
 authenticator = stauth.Authenticate(
     config['credentials'],
     config['cookie']['name'],
@@ -41,29 +48,25 @@ authenticator = stauth.Authenticate(
 st.title("😎 HFC Restaurant - Owner Login")
 authenticator.login()
 
-# --- Main App Logic ---
-# This code only runs AFTER a successful login
+# --- Main App Logic (remains the same) ---
 if st.session_state["authentication_status"]:
     
-    # Display the logout button and welcome message in the sidebar
     with st.sidebar:
         st.write(f'Welcome, **{st.session_state["name"]}**!')
         authenticator.logout()
     
-    # --- The Main Dashboard App UI ---
     st.info("Select a management page from the sidebar to continue.")
     
     st.divider()
     st.header("AI Synchronization")
-    st.info("Click the button below to update the AI's knowledge base with the latest menu. This is crucial after adding new items or changing descriptions/prices.")
+    st.info("Click the button below to update the AI's knowledge base with the latest menu.")
 
-    # Center the button for better visual appeal
     col1, col2, col3 = st.columns([2, 1, 2])
     with col2:
         if st.button("🔄 Sync Menu with AI", use_container_width=True, type="primary"):
             if trigger_sync_to_pinecone():
                 st.success("Sync started! The AI is now learning. ✨")
-                time.sleep(2) # Brief pause to let the user read the message
+                time.sleep(2)
                 st.rerun()
 
 elif st.session_state["authentication_status"] is False:
