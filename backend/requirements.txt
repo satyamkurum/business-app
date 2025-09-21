@@ -8,7 +8,9 @@ langchain-community
 sentence-transformers
 langchain-pinecone
 langchain-text-splitters
-pymongo
+pymongo==3.12.3
 pinecone
 pydantic-settings
 python-dotenv
+xxhash
+firebase-admin
