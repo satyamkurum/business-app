@@ -3,12 +3,12 @@ uvicorn[standard]
 langchain
 langchain-google-genai
 langchain-community
-sentence-transformers
 langchain-pinecone
 langchain-text-splitters
-motor
-pymongo
-pinecone
+motor         
 pydantic-settings
 python-dotenv
 firebase-admin
+pinecone
+sentence-transformers
+
