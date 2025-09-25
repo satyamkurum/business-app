@@ -6,7 +6,7 @@ langchain-community
 langchain-pinecone
 langchain-text-splitters
 xxhash
-pymongo==3.12.3
+pymongo
 pinecone
 pydantic-settings
 python-dotenv
