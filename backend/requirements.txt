@@ -5,9 +5,19 @@ langchain-google-genai
 langchain-community
 langchain-pinecone
 langchain-text-splitters
+<<<<<<< HEAD
 motor
+=======
+xxhash
+>>>>>>> 0dc087eb4dac6daa1ac18771e59fc552cd54c5f3
 pymongo
 pinecone
 pydantic-settings
 python-dotenv
+<<<<<<< HEAD
 firebase-admin
+=======
+requests
+firebase-admin
+motor
+>>>>>>> 0dc087eb4dac6daa1ac18771e59fc552cd54c5f3

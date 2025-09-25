@@ -4,4 +4,8 @@ streamlit-firebase-auth
 python-dotenv
 pydantic-settings
 streamlit-authenticator
+<<<<<<< HEAD
 PyYAML
+=======
+PyYAML
+>>>>>>> 0dc087eb4dac6daa1ac18771e59fc552cd54c5f3
