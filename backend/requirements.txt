@@ -1,14 +1,13 @@
 fastapi
 uvicorn[standard]
 langchain
-langgraph
 langchain-google-genai
-google-generativeai
 langchain-community
-sentence-transformers
 langchain-pinecone
 langchain-text-splitters
+motor
 pymongo
 pinecone
 pydantic-settings
 python-dotenv
+firebase-admin

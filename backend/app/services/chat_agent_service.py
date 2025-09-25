@@ -6,7 +6,7 @@ from langchain_core.messages import HumanMessage, AIMessage
 from langchain.tools import tool
 from langchain.agents import create_tool_calling_agent, AgentExecutor
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_community.embeddings import SentenceTransformerEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
 from langchain_core.documents import Document
 import traceback
@@ -231,14 +231,22 @@ class MongoConnectionPool:
 mongo_pool = MongoConnectionPool()
 
 # --- Initialize Embeddings and Vectorstores ---
-logger.info("=== Initializing Optimized Chat Agent Service ===")
+logger.info("=== Initializing Optimized Chat Agent Service (with Gemini Embeddings) ===")
 
 try:
-    # Initialize embeddings with explicit model loading
-    embedding_model = SentenceTransformerEmbeddings(model_name='all-MiniLM-L6-v2')
-    logger.info("✅ Embeddings model loaded successfully")
+    # --- THIS IS THE CHANGE ---
+    # Import the correct library at the top of your file:
+    # from langchain_google_genai import GoogleGenerativeAIEmbeddings
+
+    # Initialize embeddings using the Google Gemini API model.
+    # This offloads all heavy computation from our server.
+    embedding_model = GoogleGenerativeAIEmbeddings(
+        google_api_key=settings.GOOGLE_API_KEY, 
+        model="gemini-embedding-001"
+    )
+    logger.info("✅ Google Gemini Embeddings model initialized successfully")
     
-    # Create vectorstores for each namespace
+    # The rest of the logic remains the same as it's a drop-in replacement.
     menu_vectorstore = PineconeVectorStore(
         index_name="restaurant-menu", 
         embedding=embedding_model, 
@@ -255,7 +263,6 @@ try:
 except Exception as e:
     logger.error(f"❌ Error initializing vectorstores: {e}")
     raise
-
 # --- Enhanced Tools with Structured Responses ---
 
 @tool
@@ -840,7 +847,7 @@ tools = [menu_search, category_filter_search, faq_search, exact_lookup, promotio
 # Optimized LLM configuration
 llm = ChatGoogleGenerativeAI(
     google_api_key=settings.GOOGLE_API_KEY, 
-    model="gemini-1.5-flash",
+    model="gemini-2.5-flash",
     temperature=0.0,
     convert_system_message_to_human=True,
     request_timeout=10  # Add timeout

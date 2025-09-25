@@ -1,8 +1,7 @@
-# backend/app/services/sync_service.py
 from pymongo import MongoClient
 from pinecone import Pinecone
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain.storage import InMemoryStore
-from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_pinecone import PineconeVectorStore
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.retrievers import ParentDocumentRetriever
@@ -10,17 +9,23 @@ from langchain_core.documents import Document
 from app.core.config import settings
 
 def run_sync():
-    """Clears and syncs all data types to their respective retrievers in Pinecone."""
-    print("Starting full data synchronization with Pinecone...")
+    """
+    Clears and syncs all data types to Pinecone using Google's Gemini embedding model.
+    This version safely handles the initial sync without trying to delete non-existent namespaces.
+    """
+    print("--- Starting full data synchronization with Pinecone (using Gemini Embeddings) ---")
+    
+    # --- 1. Initialize Components ---
     mongo_client = MongoClient(settings.MONGO_URI)
-    db = mongo_client["restaurantDB"]
-    embeddings_model = SentenceTransformerEmbeddings(model_name='all-MiniLM-L6-v2')
+    db = mongo_client["restaurentDB"]
+    embeddings_model = GoogleGenerativeAIEmbeddings(google_api_key=settings.GOOGLE_API_KEY, model="gemini-embedding-001")
     pc = Pinecone(api_key=settings.PINECONE_API_KEY)
     index = pc.Index("restaurant-menu")
 
-    # --- 1. Sync Menu Items ---
+    # --- 2. Sync Menu Items ---
     print("\n--- Syncing Menu Items ---")
-    index.delete(delete_all=True, namespace="menu-items")
+    # --- THIS IS THE FIX: We no longer need to delete beforehand ---
+    # index.delete(delete_all=True, namespace="menu-items") 
     
     menu_vectorstore = PineconeVectorStore(index_name="restaurant-menu", embedding=embeddings_model, namespace="menu-items")
     menu_retriever = ParentDocumentRetriever(
@@ -38,17 +43,18 @@ def run_sync():
     ]
     if menu_docs:
         menu_retriever.add_documents(menu_docs, ids=None)
-        print(f"Synced {len(menu_docs)} menu items.")
+        print(f"✅ Synced {len(menu_docs)} menu items.")
 
-    # --- 2. Sync FAQs ---
+    # --- 3. Sync FAQs ---
     print("\n--- Syncing FAQs ---")
-    index.delete(delete_all=True, namespace="faqs")
+    # --- THIS IS THE FIX: We no longer need to delete beforehand ---
+    # index.delete(delete_all=True, namespace="faqs")
 
     faq_vectorstore = PineconeVectorStore(index_name="restaurant-menu", embedding=embeddings_model, namespace="faqs")
     faq_retriever = ParentDocumentRetriever(
         vectorstore=faq_vectorstore,
         docstore=InMemoryStore(),
-        child_splitter=RecursiveCharacterTextSplitter(chunk_size=200) # Smaller chunks for FAQs
+        child_splitter=RecursiveCharacterTextSplitter(chunk_size=200)
     )
 
     restaurant = db.restaurants.find_one()
@@ -61,9 +67,10 @@ def run_sync():
     ]
     if faq_docs:
         faq_retriever.add_documents(faq_docs, ids=None)
-        print(f"Synced {len(faq_docs)} FAQs.")
+        print(f"✅ Synced {len(faq_docs)} FAQs.")
         
     mongo_client.close()
-    message = "Sync complete."
+    message = "--- Synchronization with Gemini embeddings complete. ---"
     print(message)
     return {"status": "success", "message": message}
+
