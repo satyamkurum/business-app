@@ -12,3 +12,4 @@ pydantic-settings
 python-dotenv
 requests
 firebase-admin
+motor
