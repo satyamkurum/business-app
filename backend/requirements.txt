@@ -5,10 +5,10 @@ langchain-google-genai
 langchain-community
 langchain-pinecone
 langchain-text-splitters
-motor         
+xxhash
+pymongo==3.12.3
+pinecone
 pydantic-settings
 python-dotenv
+requests
 firebase-admin
-pinecone
-sentence-transformers
-
