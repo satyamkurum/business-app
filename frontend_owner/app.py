@@ -11,42 +11,28 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- THE DEFINITIVE, ENVIRONMENT-AWARE CONFIGURATION ---
-config = None
-try:
-    # --- THIS IS THE FIX ---
-    # We load the read-only secrets from Streamlit Cloud...
-    creds = dict(st.secrets['credentials'])
-    cook = dict(st.secrets['cookie'])
-    preauth = dict(st.secrets['preauthorized'])
-    
-    # ...and then build a new, MUTABLE dictionary from them.
-    # This is the dictionary we will pass to the authenticator.
-    config = {
-        'credentials': creds,
-        'cookie': cook,
-        'preauthorized': preauth
-    }
-    print("Loaded config from Streamlit Secrets into a mutable dictionary.")
+# 1. Load config from secrets and convert to a mutable dictionary
+config = dict(st.secrets)
 
-except FileNotFoundError:
-    # This is the fallback for local development
-    print("Secrets not found on cloud, loading from local auth_config.yaml.")
-    with open('auth_config.yaml') as file:
-        config = yaml.load(file, Loader=SafeLoader)
-
-# -------------------------------------------------------------
-
-# Create the Authenticator object with the now-mutable config
+# 2. Initialize the authenticator with the mutable config dictionary
 authenticator = stauth.Authenticate(
     config['credentials'],
     config['cookie']['name'],
     config['cookie']['key'],
-    config['cookie']['expiry_days'],
+    config['cookie']['expiry_days']
 )
 
-st.title("😎 HFC Restaurant - Owner Login")
+# 3. Proceed with login
 authenticator.login()
+
+if st.session_state["authentication_status"]:
+    authenticator.logout()
+    st.write(f'Welcome *{st.session_state["name"]}*')
+    st.title('Some content')
+elif st.session_state["authentication_status"] is False:
+    st.error('Username/password is incorrect')
+elif st.session_state["authentication_status"] is None:
+    st.warning('Please enter your username and password')
 
 # --- Main App Logic (remains the same) ---
 if st.session_state["authentication_status"]:
