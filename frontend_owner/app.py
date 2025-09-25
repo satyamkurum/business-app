@@ -1,7 +1,5 @@
 import streamlit as st
 import streamlit_authenticator as stauth
-import yaml
-from yaml.loader import SafeLoader
 from utils.api_client import trigger_sync_to_pinecone
 import time
 
@@ -11,10 +9,11 @@ st.set_page_config(
     layout="wide"
 )
 
-# 1. Load config from secrets and convert to a mutable dictionary
+# --- AUTHENTICATION SETUP ---
+# Load config from secrets and convert to a mutable dictionary
 config = dict(st.secrets)
 
-# 2. Initialize the authenticator with the mutable config dictionary
+# Initialize the authenticator
 authenticator = stauth.Authenticate(
     config['credentials'],
     config['cookie']['name'],
@@ -22,41 +21,38 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days']
 )
 
-# 3. Proceed with login
+# --- LOGIN & PAGE LOGIC ---
+# Render the login module
 authenticator.login()
 
+# Case 1: User is successfully authenticated
 if st.session_state["authentication_status"]:
-    authenticator.logout()
-    st.write(f'Welcome *{st.session_state["name"]}*')
-    st.title('Some content')
-elif st.session_state["authentication_status"] is False:
-    st.error('Username/password is incorrect')
-elif st.session_state["authentication_status"] is None:
-    st.warning('Please enter your username and password')
-
-# --- Main App Logic (remains the same) ---
-if st.session_state["authentication_status"]:
-    
+    # --- SIDEBAR ---
     with st.sidebar:
         st.write(f'Welcome, **{st.session_state["name"]}**!')
-        authenticator.logout()
-    
+        authenticator.logout() # Renders the logout button in the sidebar
+
+    # --- MAIN PAGE CONTENT ---
     st.info("Select a management page from the sidebar to continue.")
-    
     st.divider()
-    st.header("AI Synchronization")
-    st.info("Click the button below to update the AI's knowledge base with the latest menu.")
+    st.header("🤖 AI Synchronization")
+    st.info("Click the button below to update the AI's knowledge base with the latest menu data.")
 
     col1, col2, col3 = st.columns([2, 1, 2])
     with col2:
         if st.button("🔄 Sync Menu with AI", use_container_width=True, type="primary"):
-            if trigger_sync_to_pinecone():
-                st.success("Sync started! The AI is now learning. ✨")
-                time.sleep(2)
-                st.rerun()
+            with st.spinner("Syncing in progress... Please wait."):
+                if trigger_sync_to_pinecone():
+                    st.success("Sync started! The AI is now learning. ✨")
+                    time.sleep(2) # Give user time to read the message
+                    st.rerun()
+                else:
+                    st.error("Failed to start sync. Please check backend logs.")
 
+# Case 2: User entered incorrect credentials
 elif st.session_state["authentication_status"] is False:
     st.error('Username/password is incorrect')
+
+# Case 3: User has not logged in yet
 elif st.session_state["authentication_status"] is None:
     st.warning('Please enter your username and password')
-
