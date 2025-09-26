@@ -14,5 +14,6 @@ class Settings(BaseSettings):
     PHONEPE_SALT_KEY: str
     PHONEPE_SALT_INDEX: int
     PHONEPE_PAY_URL: str
+    FRONTEND_URLS:str
     
 settings = Settings()

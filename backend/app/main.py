@@ -5,15 +5,14 @@ from contextlib import asynccontextmanager
 from app.db.mongodb import connect_to_mongo, close_mongo_connection
 from app.api.v1.api import api_router
 from app.core.config import settings
-
-# --- 1. IMPORT THE MIDDLEWARE ---
 from fastapi.middleware.cors import CORSMiddleware
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """Handles application startup and shutdown events."""
     # Startup logic
     await connect_to_mongo()
-    # Ensure Firebase is initialized only once
+    # Ensure Firebase is initialized only once to prevent errors
     if not firebase_admin._apps:
         try:
             cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS_PATH)
@@ -31,14 +30,13 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# --- 2. DEFINE ALLOWED ORIGINS ---
-# This MUST match the address of your React development server
-origins = [
-    "http://localhost:3000",
-]
+# --- THIS IS THE DEFINITIVE FIX FOR DEPLOYMENT ---
+# Instead of a hardcoded list, we read the allowed frontend URLs
+# from your environment variables. This makes the application portable.
+# On Render, you will set this to your Vercel and Streamlit URLs.
+# Locally, it can be set to your localhost addresses.
+origins = settings.FRONTEND_URLS.split(",") if hasattr(settings, 'FRONTEND_URLS') else []
 
-# --- 3. ADD THE MIDDLEWARE TO YOUR APP ---
-# This MUST be added before you include your routers.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -47,9 +45,11 @@ app.add_middleware(
     allow_headers=["*"], # Allows all headers
 )
 
-# --- 4. INCLUDE YOUR ROUTERS ---
+# Include all your API endpoints from other files
 app.include_router(api_router, prefix="/api/v1")
 
 @app.get("/")
 def read_root():
-    return {"status": "ok", "message": "Welcome!"}
+    """A simple root endpoint to confirm the API is running."""
+    return {"status": "ok", "message": "Welcome to the HFC Restaurant AI Assistant API!"}
+
