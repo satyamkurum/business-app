@@ -4,7 +4,7 @@ import requests
 import streamlit as st
 
 # The base URL for our FastAPI backend
-API_BASE_URL = "http://127.0.0.1:8000/api/v1"
+API_BASE_URL = "https://business-app-seg7.onrender.com/api/v1"
 
 ADMIN_API_KEY = "154658972498424897934762345" 
 
