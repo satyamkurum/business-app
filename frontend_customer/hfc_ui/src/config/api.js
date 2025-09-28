@@ -182,3 +182,66 @@ export async function initiatePayment(token, cartItems) {
     throw error;
   }
 }
+
+export async function getPromotions() {
+  const url = `${API_BASE_URL}/promotions/`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Network response was not ok");
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to fetch promotions:", error);
+    return [];
+  }
+}
+
+export async function getRestaurantDetails() {
+  const url = `${API_BASE_URL}/restaurant/details`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Network response was not ok");
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to fetch restaurant details:", error);
+    return null;
+  }
+}
+
+/**
+ * Checks the final status of a payment with our backend.
+ * This is the secure way to confirm a transaction.
+ * @param {string} transactionId - The merchantTransactionId of the order.
+ * @returns {Promise<Object|null>} The status response from the server.
+ */
+export async function checkPaymentStatus(transactionId) {
+  // This URL must match the status check endpoint in your payments.py file
+  const url = `${API_BASE_URL}/payments/status/${transactionId}`;
+  try {
+    const response = await fetch(url); // This is a GET request
+    if (!response.ok) {
+      throw new Error(`Network response was not ok. Status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to check payment status:", error);
+    return null;
+  }
+}
+
+export async function getMyOrders(token) {
+  const url = `${API_BASE_URL}/payments/my-orders`; // You will create this backend endpoint
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Network response was not ok. Status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to fetch user orders:", error);
+    return []; // Return an empty array on error to prevent UI crashes
+  }
+}

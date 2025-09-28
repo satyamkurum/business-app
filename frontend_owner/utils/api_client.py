@@ -4,7 +4,7 @@ import requests
 import streamlit as st
 
 # The base URL for our FastAPI backend
-API_BASE_URL = "https://business-app-seg7.onrender.com/api/v1"
+API_BASE_URL = "http://127.0.0.1:8000/api/v1"
 
 ADMIN_API_KEY = "154658972498424897934762345" 
 
@@ -141,55 +141,60 @@ def delete_menu_item(item_id: str):
         return False    
     
 def get_promotions():
-    """Fetches all promotions from the API."""
+    """Fetches all promotions from the API using the admin API key."""
     try:
-        response = requests.get(f"{API_BASE_URL}/promotions/")
+        # We add the secure header to this call.
+        response = requests.get(f"{API_BASE_URL}/promotions/", headers=HEADERS)
         if response.status_code == 200:
             return response.json()
+        st.error(f"Failed to fetch promotions: {response.text}")
         return []
-    except requests.exceptions.ConnectionError:
-        st.error("Connection Error: Could not connect to the API.")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Connection Error: {e}")
         return []
 
 def create_promotion(promo_data: dict):
-    """Posts a new promotion to the API."""
+    """Posts a new promotion to the API using the admin API key."""
     try:
-        response = requests.post(f"{API_BASE_URL}/promotions/", json=promo_data)
+        # We add the secure header to this call.
+        response = requests.post(f"{API_BASE_URL}/promotions/", json=promo_data, headers=HEADERS)
         if response.status_code == 201:
             st.success("Promotion created successfully!")
             return True
         st.error(f"Failed to create promotion: {response.text}")
         return False
-    except requests.exceptions.ConnectionError:
-        st.error("Connection Error: Could not connect to the API.")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Connection Error: {e}")
         return False
 
 def update_promotion(promo_id: str, promo_data: dict):
-    """Puts an update to a promotion via the API."""
+    """Puts an update to a promotion via the API using the admin API key."""
     try:
-        response = requests.put(f"{API_BASE_URL}/promotions/{promo_id}", json=promo_data)
+        # We add the secure header to this call.
+        response = requests.put(f"{API_BASE_URL}/promotions/{promo_id}", json=promo_data, headers=HEADERS)
         if response.status_code == 200:
             st.success("Promotion updated successfully!")
             return True
         st.error(f"Failed to update promotion: {response.text}")
         return False
-    except requests.exceptions.ConnectionError:
-        st.error("Connection Error: Could not connect to the API.")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Connection Error: {e}")
         return False
 
 def delete_promotion(promo_id: str):
-    """Deletes a promotion via the API."""
+    """Deletes a promotion via the API using the admin API key."""
     try:
-        response = requests.delete(f"{API_BASE_URL}/promotions/{promo_id}")
+        # We add the secure header to this call.
+        response = requests.delete(f"{API_BASE_URL}/promotions/{promo_id}", headers=HEADERS)
         if response.status_code == 204: # 204 No Content
             st.success("Promotion deleted successfully!")
             return True
         st.error(f"Failed to delete promotion: {response.text}")
         return False
-    except requests.exceptions.ConnectionError:
-        st.error("Connection Error: Could not connect to the API.")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Connection Error: {e}")
         return False
-    
+
 
 def get_faqs():
     try:
@@ -270,13 +275,83 @@ def trigger_sync_to_pinecone():
 
 
 def get_all_orders():
-    """Fetches all orders from the backend. Requires admin API key."""
+    """
+    Fetches all orders from the backend for the owner's dashboard.
+    Requires the admin API key for authentication.
+    """
     try:
         response = requests.get(f"{API_BASE_URL}/payments/orders", headers=HEADERS)
         if response.status_code == 200:
             return response.json()
         st.error(f"Failed to fetch orders: {response.text}")
         return []
-    except Exception as e:
-        st.error(f"Connection Error: {e}")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Connection Error while fetching orders: {e}")
         return []
+
+def update_order_status(order_id: str, status: str, delivery_info: dict = None):
+    """
+    Updates an order's status. This is a secure action that requires the admin API key.
+    
+    Args:
+        order_id: The MongoDB ID of the order to update.
+        status: The new status (e.g., "CONFIRMED", "PREPARING", "SHIPPED").
+        delivery_info: An optional dictionary with 'name' and 'phone' for the delivery partner.
+    """
+    url = f"{API_BASE_URL}/payments/orders/{order_id}/status"
+    
+    # This payload matches the structure your backend endpoint expects.
+    payload = {
+        "status": status,
+        "delivery_info": delivery_info
+    }
+    
+    try:
+        response = requests.put(url, json=payload, headers=HEADERS)
+        if response.status_code == 200:
+            # Using st.toast provides a clean, temporary notification
+            st.toast(f"Order status successfully updated to {status}!", icon="✅")
+            return True
+        else:
+            st.error(f"Failed to update status: {response.text}")
+            return False
+    except requests.exceptions.RequestException as e:
+        st.error(f"Connection Error while updating status: {e}")
+        return False
+
+
+
+
+def get_restaurant_details():
+    """
+    Fetches the core restaurant details (like 'About Us' text and gallery URLs).
+    This endpoint is public, so no auth headers are needed.
+    """
+    try:
+        response = requests.get(f"{API_BASE_URL}/restaurant/details")
+        if response.status_code == 200:
+            return response.json()
+        else:
+            st.error(f"Failed to fetch restaurant details: {response.text}")
+            return None
+    except requests.exceptions.RequestException as e:
+        st.error(f"Connection Error while fetching details: {e}")
+        return None
+
+def update_restaurant_details(details_data: dict):
+    """
+    Updates the restaurant's core details.
+    This is a secure action and requires the admin API key.
+    """
+    try:
+        response = requests.put(f"{API_BASE_URL}/restaurant/details", json=details_data, headers=HEADERS)
+        if response.status_code == 200:
+            st.success("'About Us' page details were updated successfully!")
+            return True
+        else:
+            st.error(f"Failed to update details: {response.text}")
+            return False
+    except requests.exceptions.RequestException as e:
+        st.error(f"Connection Error while updating details: {e}")
+        return False
+

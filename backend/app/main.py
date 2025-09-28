@@ -35,7 +35,7 @@ app = FastAPI(
 # from your environment variables. This makes the application portable.
 # On Render, you will set this to your Vercel and Streamlit URLs.
 # Locally, it can be set to your localhost addresses.
-origins = settings.FRONTEND_URLS.split(",") if hasattr(settings, 'FRONTEND_URLS') else []
+origins = settings.FRONTEND_URLS.split(",") if hasattr(settings, 'FRONTEND_URLS') and settings.FRONTEND_URLS else []
 
 app.add_middleware(
     CORSMiddleware,

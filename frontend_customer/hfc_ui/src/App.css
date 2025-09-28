@@ -299,3 +299,137 @@ body {
   /* Login Card: Make it take up more screen width */
   .login-card { padding: 1.5rem; max-width: 100%; }
 }
+
+/* in src/App.css, at the bottom */
+
+/* --- 12. ABOUT US PAGE GALLERY STYLES --- */
+
+.about-page-content {
+  width: 100%;
+  max-width: 56rem; /* max-w-4xl */
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.photo-gallery {
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.gallery-grid {
+  display: grid;
+  /* This creates a responsive grid with 3 columns on desktop */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.gallery-image-wrapper {
+  overflow: hidden;
+  border-radius: 0.75rem;
+  box-shadow: var(--soft-shadow);
+  aspect-ratio: 1 / 1; /* Makes the images square */
+}
+
+.gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+}
+
+.gallery-image:hover {
+  transform: scale(1.1);
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+  .gallery-grid {
+    /* Switch to 2 columns on smaller screens */
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+
+/* in src/App.css, at the bottom */
+
+/* --- 11. DECORATED NOTIFICATIONS PAGE STYLES --- */
+
+.notifications-page {
+  padding: 1rem;
+  max-width: 56rem; /* max-w-4xl */
+  margin: 0 auto; /* Center the content */
+}
+
+@media (min-width: 768px) {
+  .notifications-page {
+    padding: 2rem;
+  }
+}
+
+/* The card for each individual promotion */
+.notification-card {
+  background-color: var(--surface-white);
+  border-radius: 1.25rem; /* A softer, more premium corner */
+  box-shadow: var(--soft-shadow);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+/* The banner image for the promotion */
+.notification-image {
+  width: 100%;
+  height: auto;
+  /* This creates a pleasant 16:9 widescreen aspect ratio */
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+/* The container for all the text content */
+.notification-content {
+  padding: 1.5rem;
+}
+
+.notification-content h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primary-vibrant);
+}
+
+.notification-content p {
+  margin-top: 0.5rem;
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+.notification-content .date-range {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-light);
+}
+
+.notifications-grid {
+  display: grid;
+  /* 1 column on mobile */
+  grid-template-columns: 1fr;
+  /* 2 columns on tablet and up */
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .notifications-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Make notification cards slightly more compact */
+.notification-card h2 {
+  font-size: 1.5rem; /* Slightly smaller title */
+}
+
+.notification-card .notification-content {
+  padding: 1.25rem; /* A little less padding */
+}

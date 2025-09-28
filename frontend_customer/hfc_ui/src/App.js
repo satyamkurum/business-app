@@ -8,6 +8,9 @@ import OrdersPage from './pages/OrdersPage';
 import ContactPage from './pages/ContactPage';
 import LoginPage from './pages/LoginPage';
 import PaymentStatusPage from './pages/PaymentStatusPage';
+import NotificationsPage from './pages/NotificationsPage'; // <-- Import
+import AboutPage from './pages/AboutPage';             // <-- Import
+
 import './App.css'; // This correctly imports your stylesheet
 
 // A simple component to protect routes
@@ -37,6 +40,8 @@ function App() {
           <Route path="/contact" element={<ProtectedRoute><ContactPage /></ProtectedRoute>} />
           <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
           <Route path="/payment-status" element={<PaymentStatusPage />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>

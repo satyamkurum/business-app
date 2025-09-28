@@ -1,17 +1,17 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
-import { MessageSquare, UtensilsCrossed, ShoppingCart, User } from 'lucide-react';
+import { MessageSquare, UtensilsCrossed, ShoppingCart, User, Bell, Info } from 'lucide-react'; // <-- 1. Import the new icons
 import { useAuth } from '../contexts/AuthContext';
-import { useCart } from '../contexts/CartContext'; // <-- 1. Import the useCart hook
+import { useCart } from '../contexts/CartContext';
 import { auth } from '../config/firebase';
-import '../App.css'; // Assuming styles are in App.css
 
 const Navbar = () => {
   const { user } = useAuth();
-  const { cartCount } = useCart(); // <-- 2. Get the cartCount from the context
+  const { cartCount } = useCart();
 
   const getNavLinkClass = ({ isActive }) => {
+    // This is your existing style function, we will reuse it
     return `nav-link ${isActive ? 'active' : ''}`;
   };
 
@@ -26,7 +26,11 @@ const Navbar = () => {
         <NavLink to="/" className={getNavLinkClass}><MessageSquare size={16} /> Chat</NavLink>
         <NavLink to="/menu" className={getNavLinkClass}><UtensilsCrossed size={16} /> Menu</NavLink>
         
-        {/* --- THIS IS THE UPDATED LINK --- */}
+        {/* --- ADDING THE NEW LINKS HERE --- */}
+        <NavLink to="/notifications" className={getNavLinkClass}><Bell size={16} /> Notifications</NavLink>
+        <NavLink to="/about" className={getNavLinkClass}><Info size={16} /> About Us</NavLink>
+        {/* ---------------------------------- */}
+        
         <NavLink to="/orders" className={getNavLinkClass}>
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <ShoppingCart size={16} />
@@ -73,3 +77,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
