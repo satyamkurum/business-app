@@ -96,24 +96,47 @@ async def get_my_orders(
 
 @router.post("/callback", include_in_schema=False, tags=["Payments"])
 async def payment_callback(request: Request, db: AsyncIOMotorClient = Depends(get_database)):
-    """Secure webhook endpoint for PhonePe to send server-to-server payment status updates."""
-    # ... (This function's logic remains the same)
+    """
+    Secure webhook endpoint for PhonePe to send server-to-server payment status updates.
+    This includes the mandatory signature validation required for production.
+    """
     try:
+        # Get the Base64 encoded response from the request body
         encoded_response = (await request.body()).decode()
+        # Get the signature from the request headers
         x_verify_header = request.headers.get("X-VERIFY")
+        
+        if not encoded_response or not x_verify_header:
+            raise HTTPException(status_code=400, detail="Invalid callback data")
+
+        # --- THIS IS THE CRITICAL SECURITY CHECK ---
+        # We recreate the signature on our end using our secret Salt Key.
         expected_signature = hashlib.sha256((encoded_response + SALT_KEY).encode()).hexdigest() + f"###{SALT_INDEX}"
+        
+        # If our signature doesn't match the one from PhonePe, we reject the request.
         if x_verify_header != expected_signature:
-            raise HTTPException(status_code=400, detail="Webhook signature mismatch.")
+            print("❌ CRITICAL: Webhook validation failed! Signatures do not match.")
+            raise HTTPException(status_code=400, detail="Webhook signature mismatch. Request rejected.")
+        
+        print("✅ Webhook validated successfully!")
+        # --- VALIDATION COMPLETE ---
+
+        # If the signature is valid, we can safely process the payment update.
         decoded_response = json.loads(base64.b64decode(encoded_response).decode())
+        
         merchant_transaction_id = decoded_response['data']['merchantTransactionId']
         payment_status = decoded_response['code']
         new_status = "SUCCESS" if payment_status == 'PAYMENT_SUCCESS' else "FAILED"
+        
         await db["orders"].update_one(
             {"merchant_transaction_id": merchant_transaction_id},
             {"$set": {"status": new_status, "phonepe_response": decoded_response}}
         )
+        print(f"Order {merchant_transaction_id} status updated via webhook to {new_status}")
         return {"status": "success"}
+
     except Exception as e:
+        print(f"Error in payment callback: {e}")
         return {"status": "error", "message": str(e)}
 
 # --- 4. Secure Endpoints for the Owner's Dashboard ---
