@@ -3,13 +3,12 @@ import { getAuth, GoogleAuthProvider, EmailAuthProvider } from 'firebase/auth';
 
 // IMPORTANT: Replace with your actual Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDQzE5fDeq4zTdluryYn3hp2Z6cQk-8lu8",
-  authDomain: "satyam-firebase.firebaseapp.com",
-  projectId: "satyam-firebase",
-  storageBucket: "satyam-firebase.firebasestorage.app",
-  messagingSenderId: "894582416608",
-  appId: "1:894582416608:web:cb0df257582244e4281c85",
-  measurementId: "G-6155B1BHTY"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
