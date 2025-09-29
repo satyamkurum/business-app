@@ -1,3 +1,6 @@
+--index-url https://phonepe.mycloudrepo.io/public/repositories/phonepe-pg-sdk-python
+--extra-index-url https://pypi.org/simple
+phonepe-sdk
 fastapi
 uvicorn[standard]
 langchain
@@ -14,4 +17,4 @@ python-dotenv
 firebase-admin
 requests
 firebase-admin
-
+pyreadline3
