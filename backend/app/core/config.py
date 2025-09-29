@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     PHONEPE_UAT_SALT_KEY: str
     PHONEPE_UAT_SALT_INDEX: int
     FRONTEND_URLS:str
+    BACKEND_URL: str
     ENVIRONMENT: str = "DEV"
+    
     
 settings = Settings()

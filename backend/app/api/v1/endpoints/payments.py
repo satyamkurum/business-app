@@ -40,7 +40,7 @@ def format_order_for_frontend(order: dict) -> dict:
         order["created_at"] = order["created_at"].isoformat()
     return order
 
-# --- 3. Core Payment Endpoints (Using only X-VERIFY) ---
+# --- 3. Core Payment Endpoints (Manual Implementation) ---
 
 @router.post("/initiate-payment", tags=["Payments"])
 async def initiate_payment(
@@ -55,15 +55,12 @@ async def initiate_payment(
     user_id = current_user.get("firebase_uid")
     amount_in_paisa = int(sum(item['pricing'][0]['price'] * item['quantity'] for item in items) * 100)
 
-    # Create the order in our database
     await db["orders"].insert_one({
         "merchant_transaction_id": merchant_transaction_id, "user_id": user_id,
         "items": [{"name": item['name'], "quantity": item['quantity'], "price": item['pricing'][0]['price']} for item in items],
         "total_amount": amount_in_paisa, "status": "PENDING", "created_at": datetime.now(timezone.utc)
     })
 
-    # The redirectUrl and callbackUrl now read from your environment variables
-    # This assumes the first URL in your FRONTEND_URLS list is the customer UI
     redirect_url_base = settings.FRONTEND_URLS.split(",")[0]
     
     payload = {
@@ -143,11 +140,17 @@ async def check_payment_status(merchant_transaction_id: str, db: AsyncIOMotorCli
         )
     return response_data
 
-# --- 4. Secure Endpoints for Owner's Dashboard ---
+# --- 4. Secure Endpoints for Owner & Customer ---
 @router.get("/orders", response_model=List[Dict], tags=["Owner Actions"])
 async def get_all_orders(db: AsyncIOMotorClient = Depends(get_database), api_key: str = Depends(get_api_key)):
     orders_cursor = db["orders"].find({}).sort("created_at", -1)
     orders_list = await orders_cursor.to_list(length=200)
+    return [format_order_for_frontend(order) for order in orders_list]
+
+@router.get("/my-orders", response_model=List[Dict], tags=["Customer Actions"])
+async def get_my_orders(db: AsyncIOMotorClient = Depends(get_database), current_user: dict = Depends(get_current_user)):
+    orders_cursor = db["orders"].find({"user_id": current_user.get("firebase_uid")}).sort("created_at", -1)
+    orders_list = await orders_cursor.to_list(length=100)
     return [format_order_for_frontend(order) for order in orders_list]
 
 @router.put("/orders/{order_id}/status", tags=["Owner Actions"])
