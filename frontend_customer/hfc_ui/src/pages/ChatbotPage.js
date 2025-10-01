@@ -9,7 +9,7 @@ const ChatbotPage = () => {
   // --- STATE MANAGEMENT ---
   // Stores the entire conversation history
   const [messages, setMessages] = useState([
-    { sender: 'agent', text: " Welcome Home 😊 Please wait 50 Seconds while I am Connecting with my Server. I'm Lily 🐰 ready to find your perfect match 😉 What are you craving today? I can assist you with Food finding, Query about Business, Please Explore..👻" }
+    { sender: 'agent', text: "I'm Lily 🐰 ready to find your perfect match 😉 What are you craving today? I can assist you with Food finding, Query about Business, Please Explore..👻" }
   ]);
   // Tracks when the agent is "thinking" to show a loading indicator
   const [isLoading, setIsLoading] = useState(false);
