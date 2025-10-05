@@ -16,12 +16,12 @@
 
 ---
 
-## 📚 Table of Contents
-- [🌟 Overview](#-overview)
-- [✨ Key Features](#-key-features)
-  - [🤵 Customer-Facing Application (React)](#-customer-facing-application-react)
-  - [👑 Owner's Dashboard (Streamlit)](#-owners-dashboard-streamlit)
-  - [🧠 AI Backend (FastAPI)](#-ai-backend-fastapi)
+##  Table of Contents
+- [ Overview](#-overview)
+- [ Key Features](#-key-features)
+  - [ Customer-Facing Application (React)](#-customer-facing-application-react)
+  - [ Owner's Dashboard (Streamlit)](#-owners-dashboard-streamlit)
+  - [ AI Backend (FastAPI)](#-ai-backend-fastapi)
 - [🏛️ Architecture](#-architecture)
 - [🛠️ Tech Stack](#️-tech-stack)
 - [🚀 Getting Started](#-getting-started)
@@ -33,16 +33,16 @@
 
 ---
 
-## 🌟 Overview
+##  Overview
 **Lily AI** is a complete, production-ready application designed to modernize the restaurant experience.  
 It combines a powerful, multilingual AI assistant with a full-featured e-commerce platform, enabling customers to get intelligent answers, browse menus, and place orders with real payments.  
 Simultaneously, restaurant owners manage everything through an intuitive dashboard with full control over orders, menu, and AI synchronization.
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
-### 🤵 Customer-Facing Application (React)
+###  Customer-Facing Application (React)
 - **Intelligent AI Chat:** Beautiful chat interface powered by Lily — a stateful AI with conversational memory.  
 - **Multilingual Support:** Handles both **English** and **Hindi** conversations seamlessly.  
 - **Dynamic Menu & Ordering:** Interactive menu with category filters and a fully functional shopping cart.  
@@ -50,14 +50,14 @@ Simultaneously, restaurant owners manage everything through an intuitive dashboa
 - **Order Tracking:** “My Orders” page for real-time tracking.  
 - **Direct Owner Messaging:** Secure channel for customers to contact the owner directly.
 
-### 👑 Owner's Dashboard (Streamlit)
+###  Owner's Dashboard (Streamlit)
 - **Secure Admin Login:** Dedicated hardcoded login system for the owner.  
 - **Full CRUD Control:** Manage menu items, categories, promotions, and FAQs.  
 - **Live Order Fulfillment:** Update order status dynamically (Confirmed → Preparing → Shipped).  
 - **AI Synchronization:** One-click button to sync database updates with Pinecone for the AI.  
 - **Escalated Chats Inbox:** View and respond to customer messages forwarded from Lily.
 
-### 🧠 AI Backend (FastAPI)
+### AI Backend (FastAPI)
 - **Expert AI Agent:** Built using **LangGraph**, following a multi-step reasoning process (Router → Worker → Responder).  
 - **Hybrid RAG Pipeline:**  
   - **Pinecone:** For fast semantic retrieval (menu descriptions, FAQs).  
@@ -66,7 +66,7 @@ Simultaneously, restaurant owners manage everything through an intuitive dashboa
 
 ---
 
-## 🏛️ Architecture
+##  Architecture
 
 A modern, decoupled, multi-component architecture enabling independent development and scaling:
 
@@ -80,7 +80,7 @@ A modern, decoupled, multi-component architecture enabling independent developme
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Category | Technologies |
 |-----------|---------------|
@@ -93,7 +93,7 @@ A modern, decoupled, multi-component architecture enabling independent developme
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Python 3.9+
@@ -149,21 +149,20 @@ cd ../..
 
 ---
 
-## 🧩 Running the Application
+##  Running the Application
 
-### 🐳 The Professional Way (Recommended)
+### The Professional Way (Recommended)
 Run all components with a single command:
 ```bash
 docker-compose up --build
 ```
 
-- Backend API → [http://localhost:8000](http://localhost:8000)  
-- Customer UI → [http://localhost:3000](http://localhost:3000)  
-- Owner Dashboard → [http://localhost:8501](http://localhost:8501)
+- Customer UI → [[http://localhost:3000](http://localhost:3000](https://business-app-omega.vercel.app/))  
+- Owner Dashboard → [[http://localhost:8501](http://localhost:8501](https://business-satyamkurum.streamlit.app/))
 
 ---
 
-### 💻 The Manual Way (3 Terminals)
+###  The Manual Way (3 Terminals)
 
 **Terminal 1 – Backend**
 ```bash
@@ -187,10 +186,11 @@ streamlit run app.py
 
 ---
 
-## 🪪 License
+##  License
 This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-## 🌐 Repository
+##  Repository
 🔗 [GitHub Repository – satyamkurum/business-app](https://github.com/satyamkurum/business-app)
+
