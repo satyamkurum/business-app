@@ -22,14 +22,14 @@
   - [ Customer-Facing Application (React)](#-customer-facing-application-react)
   - [ Owner's Dashboard (Streamlit)](#-owners-dashboard-streamlit)
   - [ AI Backend (FastAPI)](#-ai-backend-fastapi)
-- [🏛️ Architecture](#-architecture)
-- [🛠️ Tech Stack](#️-tech-stack)
-- [🚀 Getting Started](#-getting-started)
+- [ Architecture](#-architecture)
+- [ Tech Stack](#️-tech-stack)
+- [ Getting Started](#-getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation & Setup](#-installation--setup)
   - [Running the Application](#-running-the-application)
-- [🪪 License](#-license)
-- [🌐 Repository](#-repository)
+- [ License](#-license)
+- [ Repository](#-repository)
 
 ---
 
@@ -157,8 +157,8 @@ Run all components with a single command:
 docker-compose up --build
 ```
 
-- Customer UI → [[http://localhost:3000](http://localhost:3000](https://business-app-omega.vercel.app/))  
-- Owner Dashboard → [[http://localhost:8501](http://localhost:8501](https://business-satyamkurum.streamlit.app/))
+- Customer UI → [[http://localhost:3000](https://business-app-omega.vercel.app/]] 
+- Owner Dashboard → [[(http://localhost:8501](https://business-satyamkurum.streamlit.app/]]
 
 ---
 
@@ -193,4 +193,5 @@ This project is licensed under the [MIT License](LICENSE).
 
 ##  Repository
 🔗 [GitHub Repository – satyamkurum/business-app](https://github.com/satyamkurum/business-app)
+
 
