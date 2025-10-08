@@ -847,7 +847,7 @@ tools = [menu_search, category_filter_search, faq_search, exact_lookup, promotio
 # Optimized LLM configuration
 llm = ChatGoogleGenerativeAI(
     google_api_key=settings.GOOGLE_API_KEY, 
-    model="gemini-2.5-flash",
+    model="gemini-1.5-flash",
     temperature=0.0,
     convert_system_message_to_human=True,
     request_timeout=10  # Add timeout
